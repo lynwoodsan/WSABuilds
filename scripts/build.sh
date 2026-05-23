@@ -16,7 +16,7 @@ MAGISK_VER=${MAGISK_VER:-stable}           # stable | beta | canary | debug
 GAPPS_BRAND=${GAPPS_BRAND:-MindTheGapps}   # MindTheGapps | none
 GAPPS_VARIANT=${GAPPS_VARIANT:-pico}
 ROOT_SOL=${ROOT_SOL:-magisk}               # magisk | kernelsu | none
-COMPRESS_FORMAT=${COMPRESS_FORMAT:-zip}    # zip | 7z | xz
+COMPRESS_FORMAT=${COMPRESS_FORMAT:-7z}     # zip | 7z | xz  (7z preferred for smaller output)
 BUILD_DIR="$(pwd)/build"
 DOWNLOAD_DIR="$(pwd)/download"
 OUTPUT_DIR="$(pwd)/output"
@@ -93,55 +93,4 @@ download_gapps() {
 }
 
 # ============================================================
-# Download Root Solution
-# ============================================================
-
-download_root() {
-    if [[ "$ROOT_SOL" == "none" ]]; then
-        log_info "Root solution disabled — skipping."
-        return
-    fi
-
-    log_info "Downloading root solution: $ROOT_SOL ($MAGISK_VER)..."
-    python3 scripts/download_root.py \
-        --root-sol "$ROOT_SOL" \
-        --magisk-ver "$MAGISK_VER" \
-        --download-dir "$DOWNLOAD_DIR"
-}
-
-# ============================================================
-# Build WSA Image
-# ============================================================
-
-build_wsa() {
-    log_info "Building WSA image..."
-    python3 scripts/build_wsa.py \
-        --arch "$ARCH" \
-        --gapps-brand "$GAPPS_BRAND" \
-        --gapps-variant "$GAPPS_VARIANT" \
-        --root-sol "$ROOT_SOL" \
-        --build-dir "$BUILD_DIR" \
-        --download-dir "$DOWNLOAD_DIR" \
-        --output-dir "$OUTPUT_DIR" \
-        --compress-format "$COMPRESS_FORMAT"
-}
-
-# ============================================================
-# Main
-# ============================================================
-
-main() {
-    log_info "=== WSABuilds — Starting Build ==="
-    log_info "Arch=$ARCH | Release=$RELEASE_TYPE | Root=$ROOT_SOL | GApps=$GAPPS_BRAND"
-
-    check_dependencies
-    setup_dirs
-    fetch_wsa
-    download_gapps
-    download_root
-    build_wsa
-
-    log_info "=== Build complete! Output: $OUTPUT_DIR ==="
-}
-
-main "$@"
+# Downlo
