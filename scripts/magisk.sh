@@ -54,7 +54,8 @@ download_magisk() {
     log_info "Downloading Magisk v${version} from ${url} ..."
 
     mkdir -p "$WORK_DIR"
-    curl -L --fail --show-error --progress-bar \
+    # Note: added --retry 3 to handle transient network failures
+    curl -L --fail --show-error --progress-bar --retry 3 \
         -o "$dest" \
         "$url" || {
         log_error "Failed to download Magisk v${version}."
@@ -104,45 +105,4 @@ patch_wsa_image() {
     log_info "Patching WSA system image with Magisk ..."
 
     # Copy Magisk binaries into WSA tools directory
-    local tools_dir="${wsa_dir}/Tools"
-    mkdir -p "$tools_dir"
-
-    cp -v "${magisk_extract_dir}/lib/x86_64/libmagisk64.so" \
-          "${tools_dir}/magisk64" 2>/dev/null || log_warn "libmagisk64.so not found, skipping."
-
-    cp -v "${magisk_extract_dir}/lib/x86/libmagisk32.so" \
-          "${tools_dir}/magisk32" 2>/dev/null || log_warn "libmagisk32.so not found, skipping."
-
-    cp -v "${magisk_extract_dir}/lib/x86_64/libmagiskinit.so" \
-          "${tools_dir}/magiskinit" 2>/dev/null || log_warn "libmagiskinit.so not found, skipping."
-
-    chmod +x "${tools_dir}/"magisk* 2>/dev/null || true
-
-    log_info "Magisk binaries copied to ${tools_dir}"
-}
-
-# -----------------------------------------------
-# Main entry point
-# -----------------------------------------------
-main() {
-    local magisk_version="${1:-26.4}"
-
-    log_info "=== Magisk Integration Script ==="
-    log_info "Magisk version : ${magisk_version}"
-    log_info "Work directory : ${WORK_DIR}"
-
-    check_dependencies
-
-    local apk_path
-    apk_path="$(download_magisk "$magisk_version")"
-
-    local extract_dir
-    extract_dir="$(extract_magisk_libs "$apk_path")"
-
-    local wsa_dir="${WORK_DIR}/wsa"
-    patch_wsa_image "$wsa_dir" "$extract_dir"
-
-    log_info "Magisk integration complete."
-}
-
-main "$@"
+    lo
