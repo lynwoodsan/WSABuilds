@@ -54,8 +54,8 @@ download_magisk() {
     log_info "Downloading Magisk v${version} from ${url} ..."
 
     mkdir -p "$WORK_DIR"
-    # Note: added --retry 3 to handle transient network failures
-    curl -L --fail --show-error --progress-bar --retry 3 \
+    # Increased --retry from 3 to 5 to better handle flaky connections on my home network
+    curl -L --fail --show-error --progress-bar --retry 5 \
         -o "$dest" \
         "$url" || {
         log_error "Failed to download Magisk v${version}."
@@ -102,7 +102,4 @@ patch_wsa_image() {
         exit 1
     fi
 
-    log_info "Patching WSA system image with Magisk ..."
-
-    # Copy Magisk binaries into WSA tools directory
-    lo
+    log_info "Patching WSA system image w
