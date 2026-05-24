@@ -64,6 +64,13 @@ download_magisk() {
         exit 1
     }
 
+    # Verify the downloaded file is a valid zip/APK and not an HTML error page
+    if ! unzip -t "$dest" &>/dev/null; then
+        log_error "Downloaded file does not appear to be a valid APK. The version v${version} may not exist."
+        rm -f "$dest"
+        exit 1
+    fi
+
     log_info "Magisk downloaded to ${dest}"
     echo "$dest"
 }
@@ -95,8 +102,4 @@ extract_magisk_libs() {
 # -----------------------------------------------
 # Patch WSA system image with Magisk
 # -----------------------------------------------
-patch_wsa_image() {
-    local wsa_dir="$1"
-    local magisk_extract_dir="$2"
-
-    if [[ ! -d "$wsa_
+patch_w
