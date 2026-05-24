@@ -86,10 +86,9 @@ extract_magisk_libs() {
     log_info "Extracting Magisk libs from APK ..."
     mkdir -p "$extract_dir"
 
+    # Note: only extracting x86_64 and x86 since I only build for Intel/AMD targets.
+    # arm64-v8a and armeabi-v7a omitted intentionally to save time and disk space.
     unzip -o "$apk_path" \
         'lib/x86_64/*' \
         'lib/x86/*' \
-        'assets/boot_patch.sh' \
-        'assets/util_functions.sh' \
-        -d "$extract_dir" || {
-    log_error "F
+        
