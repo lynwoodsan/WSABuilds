@@ -72,6 +72,15 @@ download_magisk() {
         exit 1
     fi
 
+    # Also sanity-check the file size -- a valid Magisk APK should be at least 5 MB.
+    # Catches edge cases where the server returns a tiny redirect/error body that
+    # somehow passes the unzip check (hasn't happened yet, but better safe than sorry).
+    local file_size
+    file_size=$(stat -c%s "$dest" 2>/dev/null || stat -f%z "$dest")
+    if [[ "$file_size" -lt 5242880 ]]; then
+        log_warn "Downloaded APK is suspiciously small (${file_size} bytes). Double-check v${version}."
+    fi
+
     log_info "Magisk downloaded to ${dest}"
     echo "$dest"
 }
@@ -86,9 +95,4 @@ extract_magisk_libs() {
     log_info "Extracting Magisk libs from APK ..."
     mkdir -p "$extract_dir"
 
-    # Note: only extracting x86_64 and x86 since I only build for Intel/AMD targets.
-    # arm64-v8a and armeabi-v7a omitted intentionally to save time and disk space.
-    unzip -o "$apk_path" \
-        'lib/x86_64/*' \
-        'lib/x86/*' \
-        
+    # Note: only extracting x86_64 and x86 since I only build for Intel/AMD target
