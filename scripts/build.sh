@@ -16,7 +16,7 @@ MAGISK_VER=${MAGISK_VER:-stable}           # stable | beta | canary | debug
 GAPPS_BRAND=${GAPPS_BRAND:-MindTheGapps}   # MindTheGapps | none
 GAPPS_VARIANT=${GAPPS_VARIANT:-pico}
 ROOT_SOL=${ROOT_SOL:-magisk}               # magisk | kernelsu | none
-COMPRESS_FORMAT=${COMPRESS_FORMAT:-7z}     # zip | 7z | xz  (switched to 7z for faster compression vs xz)
+COMPRESS_FORMAT=${COMPRESS_FORMAT:-zip}    # zip | 7z | xz  (using zip for broader compatibility)
 BUILD_DIR="$(pwd)/build"
 DOWNLOAD_DIR="$(pwd)/download"
 OUTPUT_DIR="$(pwd)/output"
@@ -92,4 +92,4 @@ download_gapps() {
         --download-dir "$DOWNLOAD_DIR"
 }
 
-# ========================
+# ======================
