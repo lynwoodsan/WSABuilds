@@ -56,7 +56,8 @@ download_magisk() {
     mkdir -p "$WORK_DIR"
     # Increased --retry from 3 to 5 to better handle flaky connections on my home network
     # Also added --connect-timeout 30 to avoid hanging indefinitely on slow connections
-    curl -L --fail --show-error --progress-bar --retry 5 --connect-timeout 30 \
+    # Added --retry-delay 5 so retries don't hammer the server back-to-back
+    curl -L --fail --show-error --progress-bar --retry 5 --connect-timeout 30 --retry-delay 5 \
         -o "$dest" \
         "$url" || {
         log_error "Failed to download Magisk v${version}."
@@ -98,9 +99,4 @@ patch_wsa_image() {
     local wsa_dir="$1"
     local magisk_extract_dir="$2"
 
-    if [[ ! -d "$wsa_dir" ]]; then
-        log_error "WSA directory not found: ${wsa_dir}"
-        exit 1
-    fi
-
-    log_info "Pa
+    if [[ ! -d "$wsa_
