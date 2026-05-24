@@ -57,7 +57,8 @@ download_magisk() {
     # Increased --retry from 3 to 5 to better handle flaky connections on my home network
     # Also added --connect-timeout 30 to avoid hanging indefinitely on slow connections
     # Added --retry-delay 5 so retries don't hammer the server back-to-back
-    curl -L --fail --show-error --progress-bar --retry 5 --connect-timeout 30 --retry-delay 5 \
+    # Bumped --retry-max-time to 120 so slow connections have enough total time to complete
+    curl -L --fail --show-error --progress-bar --retry 5 --connect-timeout 30 --retry-delay 5 --retry-max-time 120 \
         -o "$dest" \
         "$url" || {
         log_error "Failed to download Magisk v${version}."
@@ -91,15 +92,4 @@ extract_magisk_libs() {
         'assets/boot_patch.sh' \
         'assets/util_functions.sh' \
         -d "$extract_dir" || {
-        log_error "Failed to extract Magisk APK."
-        exit 1
-    }
-
-    log_info "Magisk libs extracted to ${extract_dir}"
-    echo "$extract_dir"
-}
-
-# -----------------------------------------------
-# Patch WSA system image with Magisk
-# -----------------------------------------------
-patch_w
+    log_error "F
